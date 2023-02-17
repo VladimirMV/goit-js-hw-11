@@ -6,7 +6,9 @@
     <title>Homework 11</title>
   </head>
   <body>
-    <main class="search">
+
+    <header class="search-header">
+   
       <form class="search-form" id="search-form">
         <input
           class="search-form__input"
@@ -18,12 +20,35 @@
         <button class="search-form__btn" type="submit"></button>
       </form>
 
+      <div class="display-mode-switch">
+        <div class="display-mode-switch__option load-more">Load</div>
+        <label class="display-mode-switch__label">
+          <input class="display-mode__input" type="checkbox"/>
+          <span class="slider"></span>
+        </label>
+        <div class="display-mode-switch__option infinite-scroll">∞</div>
+      </div>
+    </header>
+
+
+    <main class="search"> 
       <div class="gallery"></div>
 
       <button class="load-btn" type="button" data-action="load-more">
         <span class="label">Load more</span>
       </button>
+
+      <aside class="scroll-top">^</aside>
+
+  <div class="card-actions">
+    <span
+      >Showing <span id="card-count">0</span> of
+      <span id="card-total">0</span> cards
+    </span>
+  </div>
     </main>
+
+
     <script type="module" src="./index.js"></script>
   </body>
 </html>

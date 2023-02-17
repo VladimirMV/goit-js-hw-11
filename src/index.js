@@ -13,6 +13,17 @@ const refs = {
   buttonEl: document.querySelector('.search-form__btn'),
 };
 
+const modeSwitch = document.querySelector('.display-mode__input');
+const cardActions = document.querySelector('.card-actions');
+ const cardCount = document.querySelector('#card-count');
+ const cardTotal = document.querySelector('#card-total');
+ 
+
+ let infinityScrollIsON = false;
+let currentPage = 1;
+ let imagesLeft = 0;
+ let totalCards = 0;
+
 const newsApiService = new NewsApiService();
  
 const loadMoreBtn = new LoadMoreBtn({
@@ -92,4 +103,53 @@ function fetchImages() {
     refs.imagesContainerEl.innerHTML = '';
   }
 
+  function modeSelection() {
+    if (modeSwitch.checked === true) {
+      infinityScrollIsON = true;
   
+      window.addEventListener('scroll', infinityScroll);
+      Notiflix.Notify.info('Infinite scroll is ON', { position: 'left-bottom' });
+    } else {
+      infinityScrollIsON = false;
+  
+      window.removeEventListener('scroll', infinityScroll);
+      Notiflix.Notify.info('Infinite scroll is OFF', { position: 'left-bottom' });
+    }
+    checkMode();
+  }
+
+  function checkMode() {
+    if (infinityScrollIsON) {
+      loadMoreBtn.style.display = 'none';
+      document.querySelector('.load-more').style.color = '#094067';
+      document.querySelector('.infinite-scroll').style.color = '#ef4565';
+    } else {
+      if (totalCards !== 0) loadMoreBtn.style.display = 'block';
+      document.querySelector('.load-more').style.color = '#ef4565';
+      document.querySelector('.infinite-scroll').style.color = '#094067';
+    }
+  }
+
+  function infinityScroll() {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  
+    if (totalCards == 0) return;
+    if (scrollTop + clientHeight >= scrollHeight - 5) {
+      loadMore();
+    }
+  }
+ 
+  // Event Listeners (done indirectly because of need to modify some values before callbacks)
+ searchIcon.addEventListener('click', newSearch);
+ searchBar.addEventListener('change', newSearch);
+ loadMoreBtn.addEventListener('click', loadMore);
+ modeSwitch.addEventListener('change', modeSelection);
+ scrollTop.addEventListener('click', () => {
+   window.scrollTo(0, 0);
+ });
+
+ // Hide "Load More..." button on default
+ loadMoreBtn.style.display = 'none';
+ modeSwitch.checked = false;
+ modeSelection();
+
