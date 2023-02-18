@@ -13,16 +13,16 @@ const refs = {
   buttonEl: document.querySelector('.search-form__btn'),
 };
 
+
 const modeSwitch = document.querySelector('.display-mode__input');
 const cardActions = document.querySelector('.card-actions');
  const cardCount = document.querySelector('#card-count');
  const cardTotal = document.querySelector('#card-total');
- 
+ const scrollTop = document.querySelector('.scroll-top');
+
+ modeSwitch.addEventListener('change', modeSelection);
 
  let infinityScrollIsON = false;
-let currentPage = 1;
- let imagesLeft = 0;
- let totalCards = 0;
 
 const newsApiService = new NewsApiService();
  
@@ -38,9 +38,19 @@ const simpleLightbox = new SimpleLightbox('.gallery a', {
 });
 
 
+
 refs.searchFormEl.addEventListener('submit', onSearch);
 refs.inputEl.addEventListener('input', () => (refs.buttonEl.disabled = false));
 loadMoreBtn.refs.button.addEventListener('click', fetchImages);
+
+scrollTop.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+});
+
+
 
 function onSearch(e) {
     e.preventDefault();
@@ -83,11 +93,14 @@ function fetchImages() {
       }
   
       Notify.success(`✅Loaded ${newsApiService.loadedNow} images.`);
-      console.log(data.hits);
+    
       appendImagesMarkup(data.hits);
       simpleLightbox.refresh();
-  
       loadMoreBtn.enable();
+
+      cardTotal.innerHTML = newsApiService.loadedNow*data.total;
+      cardCount.innerHTML = newsApiService.loadedNow*(newsApiService.page-1);
+
     });
   }
   
@@ -103,53 +116,28 @@ function fetchImages() {
     refs.imagesContainerEl.innerHTML = '';
   }
 
+
+
+  // Mode Switcher Infinity
   function modeSelection() {
     if (modeSwitch.checked === true) {
       infinityScrollIsON = true;
   
       window.addEventListener('scroll', infinityScroll);
-      Notiflix.Notify.info('Infinite scroll is ON', { position: 'left-bottom' });
+      Notify.success(`✅Infinite scroll is ON`);
     } else {
       infinityScrollIsON = false;
-  
       window.removeEventListener('scroll', infinityScroll);
-      Notiflix.Notify.info('Infinite scroll is OFF', { position: 'left-bottom' });
+      Notify.failure('❌Infinite scroll is OFF' );
     }
-    checkMode();
-  }
-
-  function checkMode() {
-    if (infinityScrollIsON) {
-      loadMoreBtn.style.display = 'none';
-      document.querySelector('.load-more').style.color = '#094067';
-      document.querySelector('.infinite-scroll').style.color = '#ef4565';
-    } else {
-      if (totalCards !== 0) loadMoreBtn.style.display = 'block';
-      document.querySelector('.load-more').style.color = '#ef4565';
-      document.querySelector('.infinite-scroll').style.color = '#094067';
-    }
+     
   }
 
   function infinityScroll() {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  
-    if (totalCards == 0) return;
+   
     if (scrollTop + clientHeight >= scrollHeight - 5) {
-      loadMore();
+      fetchImages();
     }
   }
- 
-  // Event Listeners (done indirectly because of need to modify some values before callbacks)
- searchIcon.addEventListener('click', newSearch);
- searchBar.addEventListener('change', newSearch);
- loadMoreBtn.addEventListener('click', loadMore);
- modeSwitch.addEventListener('change', modeSelection);
- scrollTop.addEventListener('click', () => {
-   window.scrollTo(0, 0);
- });
-
- // Hide "Load More..." button on default
- loadMoreBtn.style.display = 'none';
- modeSwitch.checked = false;
- modeSelection();
-
+  

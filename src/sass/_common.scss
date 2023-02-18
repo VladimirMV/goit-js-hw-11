@@ -165,6 +165,8 @@ body {
 
   width: 50px;
   height: 20px;
+  
+  
 
   cursor: pointer;
   & input {
@@ -189,11 +191,15 @@ body {
   transition: 0.4s;
   border: none;
   border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 
   cursor: pointer;
 
   &:before {
     position: absolute;
+
     content: '';
     left: 4px;
     bottom: 4px;
@@ -226,4 +232,40 @@ body {
 .display-mode-switch__option.infinite-scroll {
   font-size:   30px;
  
+}
+
+.card-actions {
+  margin: 8px;
+  padding: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.scroll-top {
+  position: fixed;
+  right: 2rem;
+  bottom: 4rem;
+
+  width: 25px;
+  height: 25px;
+
+  background-color: rgb(244, 101, 101);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+  border-radius: 50%;
+
+  text-align: center;
+  font-size: 20px;
+  color: rgb(62, 87, 90);
+
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover {
+    transform: scale(1.4);
+  }
 }
